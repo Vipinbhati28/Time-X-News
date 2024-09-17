@@ -55,6 +55,7 @@ function onNavItemClick(id) {
     curSelectedNav?.classList.remove("active");
     curSelectedNav = navItem;
     curSelectedNav.classList.add("active");
+    
 }
 
 const searchButton = document.getElementById("search-button");
@@ -66,4 +67,5 @@ searchButton.addEventListener('click', () => {
     fetchNews(query);
     curSelectedNav?.classList.remove("active");
     curSelectedNav = null;
+    
 });

@@ -1,5 +1,5 @@
-const API_KEY = "9ddab12fca744ead9027766f2578974f";
-const url = "https://newsapi.org/v2/everything?q=";
+const API_KEY = "7576ee620d22b23587a1103a2266c181";
+const url = "https://gnews.io/api/v4/search?q=";
 
 window.addEventListener("load", () => fetchNews("India"));
 
@@ -8,8 +8,9 @@ function reload() {
 }
 
 async function fetchNews(query) {
-    const res = await fetch(`${url}${query}&apiKey=${API_KEY}`);
+    const res = await fetch(`${url}${query}&token=${API_KEY}&lang=en`);
     const data = await res.json();
+    console.log(data);
     bindData(data.articles);
 }
 
@@ -19,8 +20,13 @@ function bindData(articles) {
 
     cardsContainer.innerHTML = "";
 
+    if (!articles) {
+        cardsContainer.innerHTML = "<p>No articles found.</p>";
+        return;
+    }
+
     articles.forEach((article) => {
-        if (!article.urlToImage) return;
+        if (!article.image) return;
         const cardClone = newsCardTemplate.content.cloneNode(true);
         fillDataInCard(cardClone, article);
         cardsContainer.appendChild(cardClone);
@@ -33,7 +39,7 @@ function fillDataInCard(cardClone, article) {
     const newsSource = cardClone.querySelector("#news-source");
     const newsDesc = cardClone.querySelector("#news-desc");
 
-    newsImg.src = article.urlToImage;
+    newsImg.src = article.image;
     newsTitle.innerHTML = article.title;
     newsDesc.innerHTML = article.description;
 
@@ -45,7 +51,7 @@ function fillDataInCard(cardClone, article) {
 
     cardClone.firstElementChild.addEventListener('click', () => {
         window.open(article.url, "_blank");
-    })
+    });
 }
 
 let curSelectedNav = null;
@@ -55,7 +61,6 @@ function onNavItemClick(id) {
     curSelectedNav?.classList.remove("active");
     curSelectedNav = navItem;
     curSelectedNav.classList.add("active");
-    
 }
 
 const searchButton = document.getElementById("search-button");
@@ -63,9 +68,8 @@ const searchText = document.getElementById("search-text");
 
 searchButton.addEventListener('click', () => {
     const query = searchText.value;
-    if(!query) return;
+    if (!query) return;
     fetchNews(query);
     curSelectedNav?.classList.remove("active");
     curSelectedNav = null;
-    
 });
